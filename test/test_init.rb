@@ -9,7 +9,6 @@ puts
 
 require_relative "../init"
 require "idempotence/sequential/controls"
-require "debug"
 
 require "test_bench"; TestBench.activate
 

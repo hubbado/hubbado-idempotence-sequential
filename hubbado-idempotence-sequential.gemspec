@@ -15,14 +15,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.files = Dir.glob('{lib}/**/*')
 
-  spec.add_runtime_dependency "evt-messaging-postgres"
-  spec.add_runtime_dependency "evt-message_store"
-  spec.add_runtime_dependency "evt-configure"
-  spec.add_runtime_dependency "evt-dependency"
-  spec.add_runtime_dependency "evt-try"
-  spec.add_runtime_dependency "evt-log"
+  spec.add_runtime_dependency "evt-messaging"
 
   spec.add_development_dependency "hubbado-style"
   spec.add_development_dependency "test_bench"
-  spec.add_development_dependency "debug"
 end
