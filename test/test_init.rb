@@ -11,3 +11,5 @@ require_relative "../init"
 require "idempotence/sequential/controls"
 
 require "test_bench"; TestBench.activate
+
+include Idempotence::Sequential
