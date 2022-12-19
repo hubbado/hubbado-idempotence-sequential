@@ -3,7 +3,7 @@ module Idempotence
     module Controls
       module Entity
         class SomeEntity
-          include Idempotence::Sequential::EntitySequencies
+          include Idempotence::Sequential::EntitySequences
         end
 
         def self.example

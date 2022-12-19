@@ -1,12 +1,12 @@
 require_relative '../../../test_init'
 
 class SomeEntity
-  include Idempotence::Sequential::EntitySequencies
+  include Idempotence::Sequential::EntitySequences
 end
 
 context "Idempotence" do
   context "Sequential" do
-    context "EntitySequencies" do
+    context "EntitySequences" do
       context '#record_sequence' do
         category = Controls::Category.example
         command_category = Controls::Category::Command.example
@@ -43,7 +43,7 @@ context "Idempotence" do
 
         context 'initial_command - message has no sequences' do
           test 'raises no causation details error' do
-            assert_raises EntitySequencies::RecordSequence::NoCausationMessageDetailsError do
+            assert_raises EntitySequences::RecordSequence::NoCausationMessageDetailsError do
               entity.record_sequence(initial_command)
             end
           end
