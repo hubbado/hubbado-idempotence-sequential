@@ -1,6 +1,6 @@
 module Idempotence
   module Sequential
-    module EntitySequencies
+    module EntitySequences
       def self.included(cls)
         cls.class_exec do
           include RecordSequence

@@ -2,7 +2,7 @@ require_relative '../../../test_init'
 
 context "Idempotence" do
   context "Sequential" do
-    context "EntitySequencies" do
+    context "EntitySequences" do
       context "#message_processed?" do
         global_position = Controls::Metadata.global_position
 

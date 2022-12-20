@@ -1,3 +1,3 @@
 require "messaging"
 
-require "idempotence/sequential/entity_sequencies"
+require "idempotence/sequential/entity_sequences"
