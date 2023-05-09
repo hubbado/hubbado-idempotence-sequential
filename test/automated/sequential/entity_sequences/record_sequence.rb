@@ -1,9 +1,5 @@
 require_relative '../../../test_init'
 
-class SomeEntity
-  include Idempotence::Sequential::EntitySequences
-end
-
 context "Idempotence" do
   context "Sequential" do
     context "EntitySequences" do
