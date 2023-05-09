@@ -3,7 +3,10 @@ module Idempotence
     module Controls
       module Entity
         class SomeEntity
+          include Schema::DataStructure
           include Idempotence::Sequential::EntitySequences
+
+          attribute :some_attribute, String
         end
 
         def self.example
