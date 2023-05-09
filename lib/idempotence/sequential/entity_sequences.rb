@@ -9,6 +9,10 @@ module Idempotence
           include Schema::DataStructure
 
           attribute :sequences, Hash, default: {}
+
+          def self.transient_attributes
+            [:sequences]
+          end
         end
       end
 
