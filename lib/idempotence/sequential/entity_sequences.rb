@@ -6,7 +6,7 @@ module Idempotence
           include RecordSequence
           include MessageProcessed
 
-          include Schema::DataStructure
+          include Schema::DataStructure unless include?(Schema::DataStructure)
 
           attribute :sequences, Hash, default: {}
 
