@@ -3,6 +3,7 @@ module Idempotence
     module Controls
       module Entity
         class SomeEntity
+          include Schema::DataStructure
           include Idempotence::Sequential::EntitySequences
         end
 
