@@ -3,6 +3,8 @@ module Idempotence
     module EntitySequences
       def self.included(cls)
         cls.class_exec do
+          prepend DeepCopy
+
           include RecordSequence
           include MessageProcessed
 
@@ -35,6 +37,15 @@ module Idempotence
           message_sequence = message.metadata.global_position
           message_sequence <= category_sequence
         end
+      end
+
+      module DeepCopy
+        def deep_copy
+          super.tap do |duplicate|
+            duplicate.sequences = duplicate.sequences.dup
+          end
+        end
+        alias :dup :deep_copy
       end
     end
   end

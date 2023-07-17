@@ -18,6 +18,16 @@ module Idempotence
         def self.id_increment
           5678
         end
+
+        module WithSequences
+          def self.example
+            message = Controls::Message.example
+
+            entity = Entity.example
+            entity.record_sequence(message)
+            entity
+          end
+        end
       end
     end
   end
