@@ -11,7 +11,8 @@ module Idempotence
       end
 
       module RecordSequence
-        class NoCausationMessageDetailsError < RuntimeError; end
+        NoCausationMessageDetailsError = Class.new(RuntimeError)
+        DecreasingSequenceError = Class.new(RuntimeError)
 
         def record_sequence(message)
           causation_message_stream_name = message.metadata.causation_message_stream_name
@@ -19,6 +20,8 @@ module Idempotence
 
           causation_category = Messaging::StreamName.get_category(causation_message_stream_name)
           causation_sequence = message.metadata.causation_message_global_position
+
+          raise DecreasingSequenceError if sequences[causation_category] &.> causation_sequence
 
           sequences[causation_category] = causation_sequence
         end
