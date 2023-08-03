@@ -3,6 +3,8 @@ module Idempotence
     module EntitySequences
       def self.included(cls)
         cls.class_exec do
+          prepend TransformWriteDupSequences
+
           include RecordSequence
           include MessageProcessed
 
@@ -34,6 +36,13 @@ module Idempotence
 
           message_sequence = message.metadata.global_position
           message_sequence <= category_sequence
+        end
+      end
+
+      module TransformWriteDupSequences
+        def transform_write(data)
+          super(data)
+          data[:sequences] = data[:sequences].dup
         end
       end
     end

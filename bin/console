@@ -4,4 +4,5 @@ require "bundler/setup"
 require_relative "../init"
 
 require "irb"
+require 'idempotence/sequential/controls'
 IRB.start(__FILE__)
