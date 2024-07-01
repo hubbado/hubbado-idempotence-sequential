@@ -8,7 +8,7 @@ module Idempotence
           include RecordSequence
           include MessageProcessed
 
-          attribute :sequences, Hash, default: {}
+          attribute :sequences, Hash, default: -> { {} }
         end
       end
 
