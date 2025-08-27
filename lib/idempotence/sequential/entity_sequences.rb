@@ -23,7 +23,13 @@ module Idempotence
           causation_category = Messaging::StreamName.get_category(causation_message_stream_name)
           causation_sequence = message.metadata.causation_message_global_position
 
-          raise DecreasingSequenceError if sequences[causation_category] &.> causation_sequence
+          if sequences[causation_category] &.> causation_sequence
+            raise DecreasingSequenceError,
+              "Causation sequence #{causation_sequence} in #{causation_message_stream_name} " \
+              "is less than or equal to the current sequence #{sequences[causation_category]}. " \
+              "Found when processing message #{message.metadata.global_position} in " \
+              "#{message.metadata.stream_name}."
+          end
 
           sequences[causation_category] = causation_sequence
         end
