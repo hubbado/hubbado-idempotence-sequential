@@ -86,11 +86,27 @@ gem 'hubbado-idempotence-sequential'
 
 And then execute:
 
-    $ bundle
+```shell
+bundle
+```
 
 Or install it yourself as:
 
-    $ gem install hubbado-idempotence-sequential
+```shell
+gem install hubbado-idempotence-sequential
+```
+
+## Ignore Decreasing Sequences
+
+By default the library will raise `DecreasingSequenceError`  when the causation position of the message passed to `record_sequence` is lower than the current sequence for the causation category.
+
+However, if you know you have a malformed stream, where the causation sequences do not increase linearly, you can disable the execption raising and log a warning instead by adding this line to your entity:
+
+```ruby
+ignore_decreasing_sequences!
+```
+
+Use this feature with extreme cauation!
 
 ## Testing
 

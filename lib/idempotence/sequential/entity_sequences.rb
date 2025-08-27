@@ -5,8 +5,10 @@ module Idempotence
         cls.class_exec do
           prepend TransformWriteDupSequences
 
+          extend IgnoreDecreasingSequences
           include RecordSequence
           include MessageProcessed
+          include Log::Dependency
 
           attribute :sequences, Hash, default: -> { {} }
         end
@@ -24,11 +26,18 @@ module Idempotence
           causation_sequence = message.metadata.causation_message_global_position
 
           if sequences[causation_category] &.> causation_sequence
-            raise DecreasingSequenceError,
-              "Causation sequence #{causation_sequence} in #{causation_message_stream_name} " \
-              "is less than or equal to the current sequence #{sequences[causation_category]}. " \
-              "Found when processing message #{message.metadata.global_position} in " \
-              "#{message.metadata.stream_name}."
+            msg = "Causation sequence #{causation_sequence} in #{causation_message_stream_name} " \
+                  "is less than the current sequence #{sequences[causation_category]}. " \
+                  "Found when processing message #{message.metadata.global_position} in " \
+                  "#{message.metadata.stream_name}."
+
+            if self.class.ignore_decreasing_sequences?
+              logger.warn(msg, tag: :sequential_idempotence)
+
+              return
+            else
+              raise DecreasingSequenceError, msg
+            end
           end
 
           sequences[causation_category] = causation_sequence
@@ -45,6 +54,16 @@ module Idempotence
 
           message_sequence = message.metadata.global_position
           message_sequence <= category_sequence
+        end
+      end
+
+      module IgnoreDecreasingSequences
+        def ignore_decreasing_sequences!
+          @ignore_decreasing_sequences = true
+        end
+
+        def ignore_decreasing_sequences?
+          !!@ignore_decreasing_sequences
         end
       end
 
