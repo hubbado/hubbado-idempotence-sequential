@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+- DecreasingSequenceError provides diagnostic info
+
 ## [1.0.4 - 2023-08-08]
 ### Added
 - Schema attribute default value is corrected to use a proc
