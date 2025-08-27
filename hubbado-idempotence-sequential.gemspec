@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "evt-messaging"
 
+  spec.add_development_dependency "debug"
   spec.add_development_dependency "hubbado-style"
   spec.add_development_dependency "test_bench"
 end

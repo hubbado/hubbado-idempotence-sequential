@@ -81,6 +81,17 @@ context "Idempotence" do
           end
         end
 
+        context 'attempt to record sequence of last event' do
+          test 'does not make any changes' do
+            entity.record_sequence(event_two_issued_by_event)
+
+            assert entity.sequences == {
+              command_category => command_gp,
+              category => event_one_issued_by_event_gp
+            }
+          end
+        end
+
         context 'attempt to record sequence of earlier event' do
           test 'raises decreasing sequence error' do
             assert_raises EntitySequences::RecordSequence::DecreasingSequenceError do

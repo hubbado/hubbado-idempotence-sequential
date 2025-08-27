@@ -26,7 +26,7 @@ module Idempotence
           if sequences[causation_category] &.> causation_sequence
             raise DecreasingSequenceError,
               "Causation sequence #{causation_sequence} in #{causation_message_stream_name} " \
-              "is less than or equal to the current sequence #{sequences[causation_category]}. " \
+              "is less than the current sequence #{sequences[causation_category]}. " \
               "Found when processing message #{message.metadata.global_position} in " \
               "#{message.metadata.stream_name}."
           end
