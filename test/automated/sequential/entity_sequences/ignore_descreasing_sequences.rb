@@ -3,7 +3,7 @@ require_relative '../../../test_init'
 context "Idempotence" do
   context "Sequential" do
     context "EntitySequences" do
-      context '#record_sequence' do
+      context 'ignore decreasing sequences' do
         category = Controls::Category.example
         command_category = Controls::Category::Command.example
 
@@ -35,56 +35,20 @@ context "Idempotence" do
         event_one_issued_by_event.metadata.follow(event_issued_by_command.metadata)
         event_two_issued_by_event.metadata.follow(event_one_issued_by_event.metadata)
 
-        entity = Controls::Entity.example
+        entity = Controls::Entity::IgnoreDecreasingSequences.example
 
-        context 'just initiated instance' do
-          test 'has no sequences yet' do
-            assert entity.sequences == {}
-          end
-        end
+        entity.record_sequence(event_issued_by_command)
+        entity.record_sequence(event_one_issued_by_event)
+        entity.record_sequence(event_two_issued_by_event)
 
-        context 'initial_command - message has no sequences' do
-          test 'raises no causation details error' do
-            assert_raises EntitySequences::RecordSequence::NoCausationMessageDetailsError do
-              entity.record_sequence(initial_command)
+        context 'attempt to record sequence of earlier event' do
+          test 'raises decreasing sequence error' do
+            refute_raises EntitySequences::RecordSequence::DecreasingSequenceError do
+              entity.record_sequence(event_one_issued_by_event)
             end
           end
-        end
 
-        context 'event issued by command' do
-          entity.record_sequence(event_issued_by_command)
-
-          test 'records sequence for command category' do
-            assert entity.sequences == { command_category => command_gp }
-          end
-        end
-
-        context 'event issued by event' do
-          entity.record_sequence(event_one_issued_by_event)
-
-          test 'records sequence for event category' do
-            assert entity.sequences == {
-              command_category => command_gp,
-              category => event_issued_by_command_gp
-            }
-          end
-        end
-
-        context 'another event issued by event' do
-          entity.record_sequence(event_two_issued_by_event)
-
-          test 'updates sequence for event category' do
-            assert entity.sequences == {
-              command_category => command_gp,
-              category => event_one_issued_by_event_gp
-            }
-          end
-        end
-
-        context 'attempt to record sequence of last event' do
-          test 'does not make any changes' do
-            entity.record_sequence(event_two_issued_by_event)
-
+          test 'does not update sequence' do
             assert entity.sequences == {
               command_category => command_gp,
               category => event_one_issued_by_event_gp
@@ -95,3 +59,4 @@ context "Idempotence" do
     end
   end
 end
+

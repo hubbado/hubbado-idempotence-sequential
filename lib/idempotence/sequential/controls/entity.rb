@@ -25,6 +25,19 @@ module Idempotence
           5678
         end
 
+        module IgnoreDecreasingSequences
+          class SomeEntity
+            include Schema::DataStructure
+            include Idempotence::Sequential::EntitySequences
+
+            ignore_decreasing_sequences!
+          end
+
+          def self.example
+            SomeEntity.new
+          end
+        end
+
         module WithSequences
           def self.example
             message = Controls::Message.example

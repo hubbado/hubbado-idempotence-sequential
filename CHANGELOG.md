@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased changes
+### Added
+- ignore_descreasing_sequences DSL method
 ### Fixed
 - DecreasingSequenceError error message description fixed
 
