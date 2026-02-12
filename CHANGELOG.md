@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased changes
+## [1.1.0 - 2025-08-27]
 ### Added
-- ignore_descreasing_sequences DSL method
+- `ignore_descreasing_sequences` DSL method
 ### Fixed
 - DecreasingSequenceError error message description fixed
 

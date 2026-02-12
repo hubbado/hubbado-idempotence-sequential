@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name     = "hubbado-idempotence-sequential"
-  spec.version  = "1.0.5"
+  spec.version  = "1.1.0"
   spec.authors  = ["Hubbado"]
   spec.email    = ["devs@hubbado.com"]
 
