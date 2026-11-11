@@ -36,6 +36,36 @@ We also highly recommend the Eventide training course [3-Day Evented Microservic
   - When you handle SubprocessedBCompleted there is no sequential idempotence check we can make to see if we have already handled this event
   - Instead you need a check on the entity, `process_completed?`
 
+### Consumer groups
+
+The check assumes that the messages of a source category reach an entity in increasing global position. The sequence is recorded for each causation *category*, so a message with a lower position than the recorded one is taken as already processed.
+
+One consumer for a category gives that order. A consumer group gives it only within each member's part of the category. Message DB assigns a stream to a group member by its cardinal ID, the part of the stream's ID before the first `+`.
+
+So the check is not safe when all of these are true:
+
+- An entity's stream takes messages from several source streams of one category
+- Those source streams have different cardinal IDs
+- The consumer of that category runs in a consumer group
+
+For example, a consumer of the `invoice` category writes each supplier's invoices to `ledger-{supplier_id}`, and runs as a group of two:
+
+- Member 0 handles `invoice-A` at global position 1000, and writes to `ledger-123`. The ledger records 1000 for the `invoice` category
+- Member 1 is behind. It then handles `invoice-B` at global position 900, for the same ledger
+- `message_processed?` returns true, because 900 is lower than 1000, and the handler ignores a message that was never processed
+
+Nothing is raised. `DecreasingSequenceError` comes from `record_sequence`, which only runs when an event is projected, and here no event is written.
+
+The check is safe in a consumer group when every source stream of an entity has the same cardinal ID as each other. A compound ID that starts with the entity's ID gives this, such as `ledgerEntry-{supplier_id}+{entry_id}` for `ledger-{supplier_id}`. The risk is a category whose stream IDs you do not choose, which is usually another component's.
+
+If your handler fans in from such a category, some options are:
+
+- Run the consumer of that category as one consumer, with no group
+- Partition by the target, not the source: give each consumer a `condition` on the ID of the entity that the message is for, in place of `group_size` and `group_member`. Every message for one entity then goes through one consumer, in order. This needs Message DB's `message_store.sql_condition` setting
+- Use the reservation pattern for that handler. It does not depend on order
+
+Recording a sequence for each group member, in place of each category, is safe only while the group does not change. When the group size changes, streams move between members, and a member's sequence no longer describes the streams that it now reads.
+
 ## Purpose of this library
 
 This library allows you to implement idempotent message processing based on global position.
