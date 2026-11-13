@@ -61,7 +61,8 @@ The check is safe in a consumer group when every source stream of an entity has 
 If your handler fans in from such a category, some options are:
 
 - Run the consumer of that category as one consumer, with no group
-- Partition by the target, not the source: give each consumer a `condition` on the ID of the entity that the message is for, in place of `group_size` and `group_member`. Every message for one entity then goes through one consumer, in order. This needs Message DB's `message_store.sql_condition` setting
+- Partition by the target, not the source: start one consumer for each target entity, each with its own `identifier`, in place of `group_size` and `group_member`. Each consumer then has its own position, and its handler ignores, in code, the messages that are not for its entity. Every message for one entity goes through one consumer, in order, and a consumer that is added later starts at the beginning of the category. Each consumer handles every message of the category, so this suits a small number of entities
+  - A `condition` on the entity's ID can spare a consumer the other entities' messages. It is only an optimisation, and it can hide messages: a message that lacks the ID never reaches the handler, and a wrong key, or a value in the wrong case, returns nothing with no error. It also needs Message DB's `message_store.sql_condition` setting
 - Use the reservation pattern for that handler. It does not depend on order
 
 Recording a sequence for each group member, in place of each category, is safe only while the group does not change. When the group size changes, streams move between members, and a member's sequence no longer describes the streams that it now reads.
@@ -145,7 +146,7 @@ Fixtures for TestBench are available at https://github.com/hubbado/hubbado-idemp
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/hubbado/hubbado-idempotence-reservation.
+https://github.com/hubbado/hubbado-idempotence-sequential.
 
 ## License
 
